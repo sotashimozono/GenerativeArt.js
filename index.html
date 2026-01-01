@@ -1,70 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generative Art Gallery</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #e6e6e6;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+      }
+      canvas {
+        display: block;
+      }
+      #galleryMenu {
+        position: fixed;
+        left: 30px;
+        top: 30px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 10;
+      }
+      #galleryMenu li {
+        color: #999;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-bottom: 12px;
+        transition: color 0.3s;
+      }
+      #galleryMenu li:hover {
+        color: #333;
+      }
+      .active {
+        color: #000 !important;
+        font-weight: bold;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generative Art Gallery</title>
-  <style>
-    body { margin: 0; overflow: hidden; background: #e6e6e6; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    canvas { display: block; }
-    #galleryMenu {
-      position: fixed;
-      left: 30px;
-      top: 30px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      z-index: 10;
-    }
-    #galleryMenu li {
-      color: #999;
-      font-size: 13px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-bottom: 12px;
-      transition: color 0.3s;
-    }
-    #galleryMenu li:hover {
-      color: #333;
-    }
-    .active { color: #000 !important; font-weight: bold; }
-  </style>
-</head>
-
-<body>
-<div id="galleryView">
-  <header>
-    <h1>Generative Art Archive</h1>
-  </header>
-  <section> 
-    <section>
-        <h2>Original Works</h2>
-        <div id="worksGrid" class="card-grid"></div>
-    </section>
-    <h2>Parody</h2>
-    <div id="parodyGrid" class="card-grid"></div>
-  </section>
-  </div>
-
-  <div id="detailView" style="display: none;">
-    <button id="backBtn">← Back to Gallery</button>
-    
-    <div id="canvasContainer">
-      <canvas id="artCanvas"></canvas>
+  <body>
+    <div id="galleryView">
+      <header>
+        <h1>Generative Art Archive</h1>
+      </header>
+      <section>
+        <section>
+          <h2>Original Works</h2>
+          <div id="worksGrid" class="card-grid"></div>
+        </section>
+        <h2>Parody</h2>
+        <div id="parodyGrid" class="card-grid"></div>
+      </section>
     </div>
 
-    <footer id="workInfo">
-      <div class="info-header">
-        <h2 id="infoTitle">Title</h2>
-        <a id="infoLink" target="_blank" rel="noopener">Source / Reference</a>
-      </div>
-      <p id="infoDescription">Description goes here...</p>
-      <div id="infoAuthor">by <span id="authorName">Author</span></div>
-    </footer>
-  </div>
+    <div id="detailView" style="display: none">
+      <button id="backBtn">← Back to Gallery</button>
 
-  <script type="module" src="/src/main.js"></script>
-</body>
+      <div id="canvasContainer">
+        <canvas id="artCanvas"></canvas>
+      </div>
+
+      <footer id="workInfo">
+        <div class="info-header">
+          <h2 id="infoTitle">Title</h2>
+          <a id="infoLink" target="_blank" rel="noopener">Source / Reference</a>
+        </div>
+        <p id="infoDescription">Description goes here...</p>
+        <div id="infoAuthor">by <span id="authorName">Author</span></div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

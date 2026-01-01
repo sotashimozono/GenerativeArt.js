@@ -47,7 +47,7 @@ const initGallery = () => {
 
 // main.js の showDetail 関数を以下のように修正
 function showDetail(path) {
-  const work = sketches[path];
+  const work = sketches[path]; //
   currentWorkPath = path;
 
   document.getElementById('galleryView').style.display = 'none';
@@ -59,33 +59,50 @@ function showDetail(path) {
     currentCleanup = null;
   }
 
-  // テキスト情報の更新
+  // 1. タイトル
   document.getElementById('infoTitle').textContent = work.title || 'Untitled';
-  document.getElementById('infoDescription').textContent = work.description || 'No description available.';
-  
+
+  // 2. 著者 (author がある時だけ 'by ...' を表示)
   const authorEl = document.getElementById('authorName');
   if (authorEl) {
     authorEl.textContent = work.author ? `by ${work.author}` : '';
+    authorEl.style.display = work.author ? 'block' : 'none';
   }
 
-  // --- GitHub リンクの設定 ---
+  // 3. 説明文 (description がある時だけ表示)
+  const descEl = document.getElementById('infoDescription');
+  if (work.description) {
+    descEl.textContent = work.description;
+    descEl.style.display = 'block';
+  } else {
+    descEl.style.display = 'none';
+  }
+
+  // 4. GitHub リンク (Source は常に表示)
   const sourceLinkEl = document.getElementById('sourceLink');
   if (sourceLinkEl) {
     const relativePath = path.replace(/^\.\.\//, '');
     sourceLinkEl.href = `${GITHUB_BASE_URL}/${relativePath}`;
-    sourceLinkEl.style.display = 'inline-block';
   }
 
-  // --- 【ここが重要】次の描画フレームまで待ってからサイズを測る ---
+  // 5. 外部リンク (External Link の条件分岐)
+  const infoLinkEl = document.getElementById('infoLink');
+  if (infoLinkEl) {
+    if (work.link) {
+      infoLinkEl.href = work.link;
+      infoLinkEl.style.display = 'inline-flex'; // 値があれば表示
+      infoLinkEl.textContent = 'External Link';
+    } else {
+      infoLinkEl.style.display = 'none';
+    }
+  }
+
   requestAnimationFrame(() => {
     const canvas = document.getElementById('artCanvas');
     const container = canvas.parentElement;
 
-    // ブラウザが計算を終えた後の、正しいサイズを取得
     canvas.width = container.clientWidth;
     canvas.height = container.clientHeight;
-
-    console.log(`Canvas resized to: ${canvas.width}x${canvas.height}`);
 
     if (work.init) {
       currentCleanup = work.init(canvas);

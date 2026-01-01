@@ -113,6 +113,21 @@ body {
   opacity: 0.8;
 }
 
+
+.link-group {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+/* --- リンクグループの配置 --- */
+.link-group {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+/* --- 共通のボタン装飾（カードやBackボタンのルールを継承） --- */
 #backBtn {
   position: absolute;
   top: 20px;
@@ -130,31 +145,41 @@ body {
 #backBtn:hover {
   background: var(--color-accent);
 }
-.link-group {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-}
 
-#infoLink {
-  color: var(--color-accent);
-  text-decoration: underline;
+#sourceLink, #infoLink {
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 0.9rem;
   font-weight: bold;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  /* 影の付け方を共通化 */
+  box-shadow: 3px 3px 0px var(--color-border);
 }
 
 #sourceLink {
-  color: var(--color-text-main);
-  background: var(--color-bg);
-  border: 1px solid var(--color-text-sub);
-  padding: 4px 8px;
-  text-decoration: none;
-  font-size: 0.9rem;
+  background-color: var(--color-text-main);
+  color: #fff;
+  border: 1.5px solid var(--color-text-main);
+}
+#sourceLink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-accent);
+}
+#infoLink {
+  background-color: var(--color-accent);
+  color: #fff;
+  border: 1.5px solid var(--color-accent);
+}
+#infoLink:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px var(--color-accent);
 }
 
-#sourceLink:hover {
-  background: var(--color-text-sub);
-  color: white;
-}
 @media (min-width: 900px) {
   #detailView {
     flex-direction: row;

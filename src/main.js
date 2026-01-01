@@ -1,105 +1,105 @@
-const modules = import.meta.glob(
-  ["../skeches/parody/*.js", "../skeches/works/*.js"],
-  { eager: true },
-);
-const skeches_parody = import.meta.glob(["../skeches/parody/*.js"], {
-  eager: true,
-});
-const skeches_works = import.meta.glob(["../skeches/works/*.js"], {
-  eager: true,
-});
+const sketches = import.meta.glob(['../sketches/parody/*.js', '../sketches/works/*.js'], { eager: true });
+import './styles/gallery.css';
 
-const galleryView = document.getElementById("galleryView");
-const detailView = document.getElementById("detailView");
-const cardGrid = document.getElementById("cardGrid");
-
-import "./styles/gallery.css";
-
-// --- 一覧ページの生成 ---
-const parodyGrid = document.getElementById("parodyGrid");
-const worksGrid = document.getElementById("worksGrid");
-
-// --- 一覧ページの生成 ---
-Object.keys(modules).forEach((path) => {
-  const work = modules[path];
-
-  const targetGrid = path.includes("parody")
-    ? document.getElementById("parodyGrid")
-    : document.getElementById("worksGrid");
-
-  const card = document.createElement("div");
-
-  card.className = "card";
-
-  // 1. カードの中に小さなキャンバスを配置
-
-  card.innerHTML = `
-
-<div class="thumbnail-wrapper">
-
-<canvas class="thumb-canvas"></canvas>
-
-</div>
-
-<div class="card-content">
-
-<h3 class="card-title">${work.title || "Untitled"}</h3>
-
-<p class="card-author">by ${work.author || "Anonymous"}</p>
-
-</div>
-
-`;
-
-  // 2. その小さなキャンバスに対して描画を実行
-
-  const thumbCanvas = card.querySelector(".thumb-canvas");
-
-  // サムネイル用にサイズを固定（CSSのサイズと合わせる）
-
-  thumbCanvas.width = 300;
-
-  thumbCanvas.height = 200;
-
-  if (work.init) {
-    // 作品の描画ロジックを実行！
-
-    // ※アニメーション作品の場合は、ここで「1回だけ描く」フラグを渡すなどの工夫が将来的に必要
-
-    work.init(thumbCanvas);
-  }
-
-  card.onclick = () => showDetail(path);
-
-  targetGrid.appendChild(card);
-});
-
-// --- 詳細ページの表示 ---
-function showDetail(path) {
-  const work = modules[path];
-  galleryView.style.display = "none";
-  detailView.style.display = "flex";
-
-  // メタデータの流し込み
-  document.getElementById("infoTitle").textContent = work.title;
-  document.getElementById("authorName").textContent = work.author;
-  document.getElementById("infoDescription").textContent =
-    work.description || "No description available.";
-
-  const linkEl = document.getElementById("infoLink");
-  if (work.link) {
-    linkEl.href = work.link;
-    linkEl.style.display = "inline";
-  } else {
-    linkEl.style.display = "none";
-  }
-
-  // 描画開始
-  const canvas = document.getElementById("artCanvas");
-  if (work.init) work.init(canvas);
+const GITHUB_BASE_URL = 'https://github.com/sotashimozono/GenerativeArt.js/blob/main';
+function getGithubUrl(path) {
+  const relativePath = path.replace(/^\.\.\//, ''); 
+  return `${GITHUB_BASE_URL}/${relativePath}`;
 }
 
-// 戻るボタン
-document.getElementById("backBtn").onclick = () => {
-  location.reload(); // 簡易的にリロードで一覧へ（本当はアニメーション停止処理が必要）
+let currentWorkPath = null;
+let currentCleanup = null;
+
+const style = getComputedStyle(document.documentElement);
+const thumbW = parseInt(style.getPropertyValue('--thumb-width')) || 300;
+const thumbH = parseInt(style.getPropertyValue('--thumb-height')) || 200;
+
+const initGallery = () => {
+  const parodyGrid = document.getElementById('parodyGrid');
+  const worksGrid = document.getElementById('worksGrid');
+
+  Object.keys(sketches).forEach((path) => {
+    const work = sketches[path];
+    const targetGrid = path.includes('parody') ? parodyGrid : worksGrid;
+    const authorTag = work.author ? `<p class="card-author">by ${work.author}</p>` : '';
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="thumbnail-wrapper">
+        <canvas class="thumb-canvas"></canvas>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">${work.title || 'Untitled'}</h3>
+        ${authorTag}
+      </div>
+    `;
+
+    const thumbCanvas = card.querySelector('.thumb-canvas');
+    thumbCanvas.width = thumbW;
+    thumbCanvas.height = thumbH;
+
+    if (work.init) work.init(thumbCanvas);
+
+    card.onclick = () => showDetail(path);
+    targetGrid.appendChild(card);
+  });
 };
+
+// main.js の showDetail 関数を以下のように修正
+function showDetail(path) {
+  const work = sketches[path];
+  currentWorkPath = path;
+
+  document.getElementById('galleryView').style.display = 'none';
+  const detailView = document.getElementById('detailView');
+  detailView.style.display = 'flex';
+
+  if (currentCleanup) {
+    currentCleanup();
+    currentCleanup = null;
+  }
+
+  // テキスト情報の更新
+  document.getElementById('infoTitle').textContent = work.title || 'Untitled';
+  document.getElementById('infoDescription').textContent = work.description || 'No description available.';
+  
+  const authorEl = document.getElementById('authorName');
+  if (authorEl) {
+    authorEl.textContent = work.author ? `by ${work.author}` : '';
+  }
+
+  // --- GitHub リンクの設定 ---
+  const sourceLinkEl = document.getElementById('sourceLink');
+  if (sourceLinkEl) {
+    const relativePath = path.replace(/^\.\.\//, '');
+    sourceLinkEl.href = `${GITHUB_BASE_URL}/${relativePath}`;
+    sourceLinkEl.style.display = 'inline-block';
+  }
+
+  // --- 【ここが重要】次の描画フレームまで待ってからサイズを測る ---
+  requestAnimationFrame(() => {
+    const canvas = document.getElementById('artCanvas');
+    const container = canvas.parentElement;
+
+    // ブラウザが計算を終えた後の、正しいサイズを取得
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
+    console.log(`Canvas resized to: ${canvas.width}x${canvas.height}`);
+
+    if (work.init) {
+      currentCleanup = work.init(canvas);
+    }
+  });
+}
+
+document.getElementById('backBtn').onclick = () => {
+  if (currentCleanup) {
+    currentCleanup();
+    currentCleanup = null;
+  }
+  document.getElementById('galleryView').style.display = 'block';
+  document.getElementById('detailView').style.display = 'none';
+};
+
+initGallery();

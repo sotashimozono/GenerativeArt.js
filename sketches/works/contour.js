@@ -20,10 +20,9 @@ export function init(canvas) {
   const zoom = 0.02; // 空間的なスケール
 
   function draw(time) {
-    const t = time * 0.002; // 時間の進行
+    const t = time * 0.002;
 
-    // 背景をクリア（少しだけ透過させることで残像を作ることも可能）
-    ctx.fillStyle = "#1a1a1a"; // シックな暗い背景
+    ctx.fillStyle = "#1a1a1a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.strokeStyle = "#555"; // 線の色（落ち着いたグレー）

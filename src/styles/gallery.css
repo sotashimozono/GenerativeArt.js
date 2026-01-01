@@ -1,0 +1,134 @@
+/* src/styles/variables.css または gallery.css の冒頭に */
+:root {
+  --color-bg: #FFFDF5;
+  --color-card-bg: #FEF1BC;
+  --color-text-main: #29586C;
+  --color-text-sub: #88ACBC;  
+  --color-border: #D49C7E; 
+  --color-accent: #E17C4F;
+  
+  --thumb-width: 320px;
+  --thumb-height: 200px;
+}
+
+body { 
+  background: var(--color-bg); 
+  color: var(--color-text-main); 
+  font-family: 'Helvetica Neue', Arial, sans-serif; 
+  margin: 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 40px;
+}
+
+.card {
+  background: var(--color-card-bg);
+  border: 1.5px solid var(--color-text-main);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0px var(--color-border);
+  padding: 0; 
+  transition: all 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px var(--color-accent);
+  border-color: var(--color-text-main);
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.card-title { margin: 0 0 5px 0; font-size: 1.1rem; }
+.card-author { margin: 0; color: var(--color-text-sub); font-size: 0.9rem; }
+
+.thumbnail-wrapper {
+  width: 100%;
+  height: var(--thumb-height);
+  overflow: hidden;
+  background: white;
+  border-bottom: 1.5px solid var(--color-text-main);
+}
+
+.thumb-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#detailView { 
+  position: relative; 
+  width: 100vw; 
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  background: var(--color-bg);
+}
+
+#canvasContainer { 
+  flex: 1; 
+  position: relative; 
+  overflow: hidden; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+#artCanvas {
+  box-shadow: 0 10px 40px rgba(41, 88, 108, 0.1);
+}
+
+#workInfo {
+  background: var(--color-card-bg); 
+  padding: 30px 40px;
+  border-top: 3px solid var(--color-text-main);
+  color: var(--color-text-main);
+}
+
+#infoTitle { font-size: 24px; margin: 0 0 10px 0; }
+#infoDescription { color: var(--color-text-main); max-width: 600px; line-height: 1.6; opacity: 0.8; }
+
+#backBtn {
+  position: absolute; top: 20px; left: 20px; z-index: 100;
+  background: var(--color-text-main); 
+  border: none;
+  color: white;
+  padding: 10px 20px; 
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 4px 4px 0px var(--color-border);
+}
+
+#backBtn:hover {
+  background: var(--color-accent);
+}
+
+@media (min-width: 900px) {
+  #detailView {
+    flex-direction: row;
+  }
+  #canvasContainer {
+    flex: 3;
+  }
+  #workInfo {
+    flex: 1;
+    height: 100%;
+    width: 350px;
+    border-top: none; 
+    border-left: 3px solid var(--color-text-main);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
